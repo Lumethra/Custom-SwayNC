@@ -1,0 +1,592 @@
+@import '/home/maximilian/.config/waybar/wallust/colors-waybar.css';
+
+/* ── roles ───────────────────────────────────────────────────────────────── */
+@define-color text        @foreground;
+@define-color text-dim    alpha(@foreground, 0.55);
+@define-color panel-bg    alpha(@background, 0.55);   /* main glass layer     */
+@define-color card-bg     alpha(@color1, 0.40);        /* notification cards   */
+@define-color selected    @color6;
+@define-color hover       alpha(@color6, 0.35);
+@define-color urgent      @color2;
+
+/* ── reset ───────────────────────────────────────────────────────────────── */
+* {
+  all: unset;
+  font-family: "FantasqueSansM Nerd Font", monospace;
+  font-size: 14px;
+  color: @text;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+/* ── transparent backdrop ────────────────────────────────────────────────── */
+.blank-window,
+.floating-notifications,
+.floating-notifications > *,
+.floating-notifications > * > *,
+.control-center-dbus-initted {
+  background: transparent;
+}
+
+notificationwindow {
+  background: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FLOATING NOTIFICATIONS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.notification-row {
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* notification-background — shared base */
+.notification-row .notification-background {
+  background: @card-bg;
+  border: 1px solid alpha(@selected, 0.15);
+  border-radius: 16px;
+  padding: 0;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+
+.notification-row .notification-background:hover {
+  background: alpha(@color1, 0.70);
+  border-color: alpha(@selected, 0.35);
+}
+
+/* floating-specific: outer margin + drop shadow + extra opacity (no panel behind) */
+.floating-notifications.background .notification-row .notification-background {
+  background: alpha(@color1, 0.50);
+  margin: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* CC-specific: tight margin, no shadow (panel already has one) */
+.control-center .notification-row .notification-background {
+  margin: 3px 0;
+}
+
+/* notification inner element — shared */
+.notification-row .notification-background .notification {
+  padding: 0;
+  border-radius: 16px;
+  background: transparent;
+}
+
+/* close button — shared between floating and CC */
+.close-button {
+  margin: 6px;
+  padding: 2px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.close-button:hover {
+  background: @hover;
+  border-color: @selected;
+}
+
+.close-button:active {
+  background: @selected;
+  color: @background;
+}
+
+/* ── progress bars ───────────────────────────────────────────────────────── */
+progressbar, progress, trough {
+  border-radius: 12px;
+}
+
+progressbar {
+  background: rgba(255, 255, 255, 0.1);
+  margin-top: 4px;
+}
+
+progress {
+  background: @selected;
+}
+
+/* ── typography ──────────────────────────────────────────────────────────── */
+.summary {
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  margin-bottom: 3px;
+  color: @text;
+}
+
+.body {
+  font-size: 0.95rem;
+  color: alpha(@text, 0.85);
+  letter-spacing: 0.2px;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: alpha(@text, 0.45);
+  letter-spacing: 0.5px;
+}
+
+.app-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: @selected;
+  letter-spacing: 0.8px;
+}
+
+.image {
+  -gtk-icon-filter: none;
+  border-radius: 100px;
+  margin: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.app-icon {
+  -gtk-icon-filter: none;
+  -gtk-icon-shadow: 0 1px 4px black;
+  margin: 6px;
+}
+
+/* ── inline reply ────────────────────────────────────────────────────────── */
+.inline-reply { margin-top: 4px; }
+
+.inline-reply .inline-reply-entry {
+  background: alpha(@background, 0.7);
+  color: @text;
+  caret-color: @text;
+  border: 1px solid @selected;
+  border-radius: 15px;
+}
+
+.inline-reply .inline-reply-button {
+  margin-left: 4px;
+  background: @panel-bg;
+  border: 1px solid @selected;
+  border-radius: 15px;
+  color: @text;
+}
+
+.inline-reply .inline-reply-button:hover { background: @hover; }
+
+.inline-reply .inline-reply-button:disabled {
+  color: alpha(@text, 0.4);
+  border-color: transparent;
+}
+
+/* ── notification default action ─────────────────────────────────────────── */
+.notification .notification-content {
+  margin: 0;
+  padding: 12px 12px 10px 12px;
+}
+
+.notification .notification-content .text-box {
+  margin-left: 12px;
+}
+
+.notification.critical {
+  border-left: 3px solid @urgent;
+  border-radius: 16px;
+}
+
+.notification.critical .summary {
+  color: @urgent;
+}
+
+.notification > *:last-child > * {
+  min-height: 3.4em;
+}
+
+.notification-default-action {
+  border-radius: 16px;
+  color: @text;
+  padding: 12px 14px 10px 14px;
+  background: transparent;
+  transition: background 200ms ease-in-out;
+}
+
+.notification-default-action:hover {
+  background: alpha(@selected, 0.10);
+}
+
+.notification-default-action:not(:only-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.notification-alt-actions {
+  background: none;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  padding: 0;
+}
+
+.notification-action { margin: 0; padding: 0; min-height: 0; }
+.notification-action > button {
+  border-radius: 0;
+  color: alpha(@text, 0.70);
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  letter-spacing: 0.4px;
+  min-height: 0;
+  min-width: 0;
+}
+.notification-action > button:hover {
+  background: alpha(@selected, 0.20);
+  border-color: alpha(@selected, 0.60);
+  color: @text;
+}
+
+.notification-action:first-child > button {
+  border-bottom-left-radius: 16px;
+}
+.notification-action:last-child > button {
+  border-bottom-right-radius: 16px;
+}
+}
+.notification-action > button:hover {
+  background: alpha(@selected, 0.25);
+  border-color: alpha(@selected, 0.70);
+  color: @text;
+}
+
+.body-image {
+  margin-top: 4px;
+  background: white;
+  -gtk-icon-filter: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CONTROL CENTER
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.control-center {
+  background: @panel-bg;
+  border-radius: 24px;
+  border: 1px solid @selected;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.65);
+  margin: 18px;
+  padding: 12px;
+}
+
+.control-center .control-center-list-placeholder {
+  opacity: 0.45;
+}
+
+.control-center .control-center-list {
+  background: transparent;
+}
+
+/* notifications in CC — container margin set above, everything else is generic */
+
+/* groups */
+.notification-group {
+  transition: opacity 200ms ease-in-out;
+  margin: 2px 8px;
+}
+
+.notification-group .notification-group-close-button .close-button {
+  margin: 12px 20px;
+}
+
+.notification-group .notification-group-buttons,
+.notification-group .notification-group-headers {
+  margin: 0 16px;
+}
+
+.notification-group .notification-group-headers {
+  font-weight: bold;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+}
+
+.notification-group .notification-group-headers .notification-group-icon {
+  -gtk-icon-size: 32px;
+}
+
+.notification-group.collapsed.not-expanded { opacity: 0.4; }
+
+.notification-group.collapsed .notification-row:not(:last-child) .notification-action,
+.notification-group.collapsed .notification-row:not(:last-child) .notification-default-action {
+  opacity: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   WIDGETS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* title */
+.widget-title > label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 10px 0;
+  margin: 6px;
+}
+
+.widget-title button {
+  background: @card-bg;
+  border-radius: 8px;
+  padding: 4px 16px;
+  border: 1px solid transparent;
+  color: @text-dim;
+}
+
+.widget-title button:hover {
+  background: @hover;
+  border-color: @selected;
+  color: @text;
+}
+
+.widget-title button:active {
+  background: @selected;
+  color: @background;
+}
+
+/* DND */
+.widget-dnd {
+  padding: 0 0 8px 0;
+}
+
+.widget-dnd > label {
+  margin: 6px 8px 6px 6px;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.widget-dnd > switch {
+  background: @card-bg;
+  border: 1px solid alpha(@selected, 0.4);
+  border-radius: 20px;
+  padding: 2px;
+  margin-left: 8px;
+  min-width: 44px;
+  min-height: 22px;
+}
+
+.widget-dnd > switch:hover {
+  background: @hover;
+  border-color: @selected;
+}
+
+.widget-dnd > switch:checked {
+  background: alpha(@selected, 0.5);
+  border-color: @selected;
+}
+
+.widget-dnd > switch:checked:hover {
+  background: @hover;
+}
+
+.widget-dnd > switch slider {
+  background: @text;
+  border-radius: 20px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+/* buttons grid */
+.widget-buttons-grid {
+  font-size: x-large;
+  padding: 6px 2px 6px 17px;
+  margin: 6px;
+  border-radius: 14px;
+  background: @card-bg;
+  border: 1px solid alpha(@selected, 0.2);
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  margin: 4px 10px;
+  padding: 6px 12px;
+  background: transparent;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: background 200ms ease, border-color 200ms ease, transform 100ms ease;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: @hover;
+  border-color: alpha(@selected, 0.5);
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:active {
+  transform: scale(0.90);
+  background: alpha(@selected, 0.4);
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button.toggle:checked {
+  background: alpha(@selected, 0.45);
+  border-color: @selected;
+  box-shadow: 0 0 6px alpha(@selected, 0.3);
+}
+
+.widget-buttons-grid flowboxchild:nth-child(1) > button label {
+  padding-right: 4px;
+}
+
+/* mpris */
+.widget-mpris {
+  background: @card-bg;
+  border-radius: 18px;
+  border: 1px solid alpha(@selected, 0.25);
+  color: @text;
+  margin: 10px 6px;
+}
+
+.widget-mpris-player {
+  background: alpha(@background, 0.70);
+  border-radius: 14px;
+  padding: 6px 14px;
+  margin: 6px;
+}
+
+.widget-mpris-player .mpris-background {
+  filter: blur(12px);
+  opacity: 0.45;
+  border-radius: 14px;
+}
+
+.widget-mpris > box > button {
+  color: @text;
+  border-radius: 20px;
+}
+
+.widget-mpris button {
+  color: alpha(@text, 0.6);
+  border-radius: 10px;
+  transition: color 200ms ease, background 200ms ease;
+}
+
+.widget-mpris button:hover {
+  color: @text;
+  background: @hover;
+}
+
+.widget-mpris-album-art {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.widget-mpris-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.widget-mpris-subtitle {
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: @text-dim;
+}
+
+picture.mpris-background {
+  opacity: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SLIDERS  —  volume + backlight, identical layout, perfectly aligned
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.widget-volume,
+.widget-backlight {
+  background: @card-bg;
+  border-radius: 14px;
+  border: 1px solid alpha(@selected, 0.30);
+  margin: 4px 6px;
+  padding: 0;
+  min-height: 46px;
+}
+
+.widget-volume > box,
+.widget-backlight > box {
+  min-height: 46px;
+  padding: 0 16px;
+}
+
+/* Lock both icon containers to the same width so tracks align */
+.widget-volume label:first-child,
+.widget-backlight label:first-child {
+  font-size: 1rem;
+  min-width: 22px;
+  max-width: 22px;
+  margin-right: 0;
+  color: @text-dim;
+}
+
+.widget-volume scale,
+.widget-backlight scale {
+  all: unset;
+  margin: 0 0 0 32px;
+  padding: 0;
+  min-height: 46px;
+  -gtk-hexpand: true;
+}
+
+.widget-backlight scale {
+  margin: 0 16px 0 33px;
+}
+
+.widget-backlight label:first-child,
+.widget-backlight image {
+  margin-left: 14px;
+}
+
+.widget-volume scale trough,
+.widget-backlight scale trough {
+  all: unset;
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: 99px;
+  min-height: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.widget-volume scale trough:hover,
+.widget-backlight scale trough:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.widget-volume scale highlight,
+.widget-backlight scale highlight {
+  all: unset;
+  background: @selected;
+  border-radius: 99px;
+  min-height: 4px;
+}
+
+.widget-volume scale highlight:hover,
+.widget-backlight scale highlight:hover {
+  background: alpha(@selected, 0.80);
+}
+
+.widget-volume scale slider,
+.widget-backlight scale slider {
+  all: unset;
+  background: @foreground;
+  border-radius: 99px;
+  min-width: 14px;
+  min-height: 14px;
+  margin: -5px 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.55);
+  transition: min-width 120ms ease, min-height 120ms ease;
+}
+
+.widget-volume scale:hover slider,
+.widget-backlight scale:hover slider {
+  min-width: 16px;
+  min-height: 16px;
+}
+
+tooltip {
+  background: @card-bg;
+  border: 1px solid alpha(@selected, 0.35);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: @text;
+  font-size: 0.85rem;
+}
+
+tooltip label {
+  color: @text;
+}
